@@ -82,11 +82,14 @@
 </template>
 
 <script setup>
+import { v4 as uuidv4 } from "uuid";
 import { useUserStore } from "~/stores/user.js";
 const store = useUserStore();
+const isloading = ref(false);
+const client = useSupabaseClient();
 const user = useSupabaseUser();
-const imageChoseen = ref(null);
-const imageDisplay = ref(null);
+const imageChoseen = ref("");
+const imageDisplay = ref("");
 const text = ref("");
 const heightText = () => {
   let textEr = document.querySelector(".posttext");
@@ -105,7 +108,30 @@ function clearData() {
 }
 
 async function createPost() {
-  const post = await useFetch("/api/create_post");
+  const dataOut = "";
+  isloading.value = true;
+  if (imageChoseen.value) {
+    const { data, error } = await client.storage
+      .from("threads_files")
+      .upload(`${uuidv4()}.jpg`, imageChoseen.value);
+    if (error) {
+      console.log(error);
+      return;
+    }
+    dataOut = data.path ? data.path : "";
+  }
+
+  const post = await useFetch("/api/create_post", {
+    userId: user.value.identities[0].identity_data.userId,
+    name: user.value.identities[0].identity_data.name,
+    image: user.value.identities[0].identity_data.avatar_url,
+    text: text.value,
+    picture: dataOut,
+  });
+
+  isloading.value = true;
+  console.log(post);
+  store.posts.push(post.data);
 }
 
 // onUnmounted(() => {

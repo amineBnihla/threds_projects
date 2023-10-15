@@ -10,6 +10,11 @@ watchEffect(() => {
     return navigateTo("/auth");
   }
 });
+onBeforeMount(async () => {
+  try {
+  } catch (error) {}
+  await useFetch("/api/get_all_posts");
+});
 onMounted(() => {
   posts.value = [
     {
