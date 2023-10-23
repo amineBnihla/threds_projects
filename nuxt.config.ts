@@ -6,7 +6,11 @@ export default defineNuxtConfig({
       '@pinia/nuxt',
       "@vite-pwa/nuxt",
   ],
- 
+   runtimeConfig: {
+      public: {
+      BacketUrl: process.env.BUCKET_URL
+    }
+   },
   devtools: { enabled: false },
    supabase: {
    redirect:false

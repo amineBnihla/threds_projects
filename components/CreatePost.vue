@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed w-[450px] max-w-screen h-screen top-0 left-1/2 -translate-x-1/2 z-50 bg-black"
+    class="fixed sm:w-[450px] max-w-screen h-screen top-0 left-0 sm:left-1/2 sm:-translate-x-1/2 z-50 bg-black"
   >
     <div
       class="border-b border-slate-300 h-[40px] flex items-center gap-3 pl-2 w-full"
@@ -16,7 +16,7 @@
     </div>
     <div>
       <div
-        class="w-full mt-3 relative h-[calc(100vh-92px)] max-h-screen overflow-y-auto"
+        class="w-full mt-3 relative h-[calc(100vh-92px)] max-h-screen overflow-y-auto px-2"
       >
         <div class="flex">
           <div class="flex gap-4 items-center">
@@ -64,10 +64,11 @@
         </div>
       </div>
       <button
+        @click="createPost"
         class="absolute bottom-0 left-0 w-full h-10 flex justify-center items-center bg-black"
       >
-        <span v-if="!loading" class="text-blue-700 font-medium">Post</span>
-        <span v-else>
+        <span v-if="!isloading" class="text-blue-700 font-medium">Post</span>
+        <span v-else class="text-white">
           <Icon
             name="eos-icons:bubble-loading"
             color="#FFFF"
@@ -108,7 +109,7 @@ function clearData() {
 }
 
 async function createPost() {
-  const dataOut = "";
+  let dataOut = "";
   isloading.value = true;
   if (imageChoseen.value) {
     const { data, error } = await client.storage
@@ -120,18 +121,24 @@ async function createPost() {
     }
     dataOut = data.path ? data.path : "";
   }
-
+  //console.log(user.value.identities[0].identity_data.name);
+  //return;
   const post = await useFetch("/api/create_post", {
-    userId: user.value.identities[0].identity_data.userId,
-    name: user.value.identities[0].identity_data.name,
-    image: user.value.identities[0].identity_data.avatar_url,
-    text: text.value,
-    picture: dataOut,
+    method: "POST",
+    body: {
+      userId: user.value.identities[0].user_id.toString(),
+      name: user.value.identities[0].identity_data.name,
+      image: user.value.identities[0].identity_data.avatar_url,
+      text: text.value,
+      picture: dataOut,
+    },
   });
 
-  isloading.value = true;
+  store.posts.push(post.data.value);
+  store.createPostOverlay = false;
+  isloading.value = false;
+  clearData();
   console.log(post);
-  store.posts.push(post.data);
 }
 
 // onUnmounted(() => {

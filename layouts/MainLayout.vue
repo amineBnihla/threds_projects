@@ -9,11 +9,11 @@
         srcset=""
       />
     </header>
-    <div class="h-[calc(100vh-88px)] absolute top-10 px-5 w-full">
+    <div class="h-[calc(100vh-88px)] absolute top-10 px-5 w-full overflow-auto">
       <slot></slot>
     </div>
     <footer
-      class="absolute px-5 flex items-center justify-center gap-28 border-t border-gray-500 text-white h-11 bottom-0 w-full"
+      class="absolute px-5 flex items-center bg-black justify-center gap-28 border-t border-gray-500 text-white h-11 bottom-0 w-full"
     >
       <button class="">
         <Icon name="material-symbols:home-outline" color="#FFFF" size="32" />

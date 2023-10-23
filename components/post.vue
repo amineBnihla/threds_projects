@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full mt-3">
+  <div class="flex flex-col w-full mt-4">
     <div class="flex justify-between">
       <div class="flex gap-4 items-center">
         <img
@@ -12,12 +12,13 @@
         <span class="font-medium text-white">{{ post.name }}</span>
       </div>
       <div>
-        <button
-          class="relative sm:opacity-0 hover:opacity-100 transition-opacity duration-300"
-        >
+        <button class="relative group">
           <Icon name="ph:dots-three-bold" color="#fff" size="30"></Icon>
-          <div class="absolute top-full right-0 bg-gray-950 rounded-sm">
+          <div
+            class="absolute top-full right-0 bg-gray-950 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
             <button
+              @click="$emit('deletePost')"
               class="py-2 px-3 flex text-xs font-medium hover:bg-gray-900 text-red-600"
             >
               <Icon
@@ -42,10 +43,11 @@
         </p>
         <img
           v-if="post && post.picture"
-          :src="post.picture"
-          class="max-w-full"
+          :src="runtimeConfig.public.BacketUrl + '/' + post.picture"
+          class="max-w-full rounded-lg"
           :alt="post.text"
           srcset=""
+          loading="lazy"
         />
       </div>
     </div>
@@ -72,7 +74,7 @@
         />
       </div>
       <div class="flex flex-col">
-        <button>
+        <button @click="likePost(post.id)">
           <icon
             name="material-symbols:favorite-outline"
             color="#ffff"
@@ -80,12 +82,15 @@
           ></icon>
         </button>
 
-        <div class="text-xs text-slate-400">2 Likes</div>
+        <div class="text-xs text-slate-400">{{ post.likes.length }} Likes</div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-defineProps(["post"]);
+let runtimeConfig = useRuntimeConfig();
+const props = defineProps(["post"]);
+function likePost(postId) {}
+console.log(props.post);
 </script>
